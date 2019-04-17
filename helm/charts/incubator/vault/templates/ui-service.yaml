@@ -1,0 +1,24 @@
+{{- if .Values.ui.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "vault.fullname" . }}-ui
+{{- with .Values.ui.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+labels:
+  app: {{ template "vault.name" . }}
+  chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.ui.port }}
+    protocol: TCP
+    targetPort: {{ .Values.service.port }}
+  selector:
+    app: {{ template "vault.name" . }}
+  type: {{ .Values.ui.type }}
+{{- end }}

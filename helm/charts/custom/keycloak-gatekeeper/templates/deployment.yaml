@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "keycloak-gatekeeper.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "keycloak-gatekeeper.name" . }}
+    helm.sh/chart: {{ include "keycloak-gatekeeper.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "keycloak-gatekeeper.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "keycloak-gatekeeper.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --client-id={{ .Values.gatekeeper.clientId }}
+            - --listen={{ .Values.gatekeeper.listen }}
+            - --discovery-url={{ .Values.gatekeeper.discoveryUrl }}
+            - --upstream-url={{ .Values.gatekeeper.upstreamUrl }}
+            - --resources={{ .Values.gatekeeper.resources }}
+            - --enable-default-deny
+            - --skip-upstream-tls-verify
+            - --enable-security-filter=false
+            - --secure-cookie=false
+            - --preserve-host
+            - --verbose={{ .Values.gatekeeper.verbose }}
+            - --enable-logging={{ .Values.gatekeeper.enableLogging }}
+            - --enable-json-logging={{ .Values.gatekeeper.enableJsonLogging }}
+          env:
+            - name: PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: {{ .Values.secret.clientSecretKey }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /oauth/health
+              port: 3000
+          readinessProbe:
+            httpGet:
+              path: /oauth/health
+              port: 3000
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}

@@ -1,0 +1,51 @@
+# Default values for keycloak-gatekeeper.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: keycloak/keycloak-gatekeeper
+  tag: 5.0.0
+  pullPolicy: Always
+
+gatekeeper:
+  clientId: ''
+  listen: 0.0.0.0:3000 # Gatekeeper pod will listen to this interface
+  discoveryUrl: '' # Keycloak URL, e.g. https://keycloak.example.com/auth/realms/master
+  upstreamUrl: '' # Proxy request to here, e.g. http://consul-ui:8500
+  resources: uri=/*
+  verbose: true
+  enableLogging: true
+  enableJsonLogging: true
+
+secret:
+  name: gatekeeper
+  clientSecretKey: clientSecret
+
+service:
+  type: LoadBalancer
+  externalPort: 80
+  internalPort: 3000
+  annotations: {}
+
+nameOverride: ""
+fullnameOverride: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,93 @@
+# Default values for <CHARTNAME>.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: my-chart-repo.com/<CHARTNAME>
+  # 0.0.1-SNAPSHOT is the default version of Spring Initializr output projects.
+  tag: 0.0.1-SNAPSHOT
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  ## Default to ClusterIP without exposing the service to public.
+  type: ClusterIP
+  externalPort: 8080
+  internalPort: 8080
+  annotations: {}
+  ## In the case where the service needs to be exposed publicly with AWS EKS using LoadBalancer with SSL applied, use the sample config below.
+  ## Your service would be available at https://<CHARTNAME>.my-host.com
+  ## Ref 1: https://kubernetes.io/docs/concepts/cluster-administration/cloud-providers/#load-balancers
+  ## Ref 2: https://kubernetes.io/docs/concepts/services-networking/#ssl-support-on-aws
+  #type: LoadBalancer
+  #externalPort: 443
+  #internalPort: 8080
+  #annotations:
+  #  external-dns.alpha.kubernetes.io/hostname: <CHARTNAME>.my-host.com
+  #  service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+  #  service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:xx-xxxx-x:xxxxxxxxx:xxxxxxx/xxxxx-xxxx-xxxx-xxxx-xxxxxxxxx
+  #  service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+
+pod:
+  annotations:
+    # If want to disable Prometheus scraping, comment the following annotations.
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/actuator/prometheus"
+
+# Be mindful about the liveness/readiness probe's initial delay seconds and timeout seconds.
+# It is common for a pod to fail these probes due to long start-up time, or health actuator takes too long to respond.
+livenessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8080
+  #initialDelaySeconds: 60
+  #timeoutSeconds: 1
+readinessProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8080
+  #initialDelaySeconds: 60
+  #timeoutSeconds: 1
+
+# You can specify external properties here.
+# Sample below sets `spring.profiles.active=kubernetes`.
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: kubernetes
+
+# If your Docker Registry unsecured, use `imagePullSecret` to specify the docker-registry secret name.
+#imagePullSecrets:
+#  - name: regcred
+imagePullSecrets: []
+
+resources: {}
+# The followings are sample initial values.
+# A conscious design decision should drive setting these values in a meaningful way
+#  limits:
+#    cpu: 1000m
+#    memory: 1024Mi
+#  requests:
+#    cpu: 500m
+#    memory: 512Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

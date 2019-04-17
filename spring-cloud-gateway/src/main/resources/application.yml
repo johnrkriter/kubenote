@@ -1,0 +1,72 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          predicates:
+            - name: Path
+              args[pattern]: "'/api/'+serviceId+'/**'"
+          filters:
+            - name: Hystrix
+              args[name]: serviceId
+            - name: RewritePath
+              args[regexp]: "'/api/' + serviceId + '/(?<remaining>.*)'"
+              args[replacement]: "'/${remaining}'"
+      httpclient:
+        connectTimeout: 30
+        responseTimeout: 30s
+      x-forwarded:
+        enabled: false
+        for-enabled: false
+        hostEnabled: false
+        portEnabled: false
+        protoEnabled: false
+        prefixEnabled: false
+      default-filters:
+          - AddRequestHeader=source,${spring.application.name}
+          - RemoveRequestHeader=Cookie
+          - RemoveRequestHeader=Set-Cookie
+          - RemoveResponseHeader=Cookie
+          - RemoveResponseHeader=Set-Cookie
+          - RemoveResponseHeader=Forwarded
+          - RemoveResponseHeader=Source
+          - RemoveResponseHeader=X-Forwarded-For
+          - RemoveResponseHeader=X-Forwarded-Proto
+          - RemoveResponseHeader=X-Forwarded-Port
+          - RemoveResponseHeader=X-Forwarded-Host
+          - RemoveResponseHeader=X-Forwarded-Prefix
+    kubernetes:
+      discovery:
+        # Service list would not be refreshed without catalog services watch. Also, this is enabled with `@EnableScheduling`.
+        catalog-services-watch:
+          enabled: true
+          delay: 5000
+
+server:
+  ssl:
+    enabled: true
+    protocol: TLS
+    enabled-protocols: TLSv1.2
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+    restart:
+      enabled: true
+
+hystrix:
+  command:
+    default:
+      fallback:
+        isolation:
+          semaphore:
+            maxConcurrentRequests: 2000
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 30000
+          semaphore:
+            maxConcurrentRequests: 2000

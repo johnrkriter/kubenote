@@ -1,0 +1,23 @@
+- hosts: target
+  tasks:
+
+    - name: Initialise helm
+      shell: helm init --client-only
+
+    ## NOTE: Replace <USERNAME> and <PASSWORD> accordingly
+    - name: Add repo to Helm
+      shell: helm repo add --username=<USERNAME> --password=<PASSWORD> projectalpha https://harbor.example.com/chartrepo/projectalpha
+
+    - name: Update repositories
+      shell: helm repo update
+
+    - name: Delete Helm release
+      shell: helm delete {{ release_name }}
+      when: "{{ delete_release_enabled }}"
+
+    ## Using values.yaml checked out from git
+    - name: Install Helm chart
+      shell: >
+        helm upgrade --install {{ release_name }} {{ chart_name }}
+        --namespace {{ namespace }} --force --version {{ chart_version }}
+        --values {{ workspace }}/helm/values.yaml {{ additional_helm_args }}

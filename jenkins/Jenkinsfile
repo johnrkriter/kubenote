@@ -1,0 +1,103 @@
+pipeline {
+
+    agent none
+
+    environment {
+        // Setup awscli
+        AWS = credentials('adop2-transition-AWSCLASSIC')
+        AWS_ACCESS_KEY_ID = "${AWS_USR}"
+        AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
+        AWS_DEFAULT_REGION = "ap-southeast-1"
+    }
+
+    tools {
+        git 'Default'
+        'org.jenkinsci.plugins.terraform.TerraformInstallation' 'terraform'
+        'org.jenkinsci.plugins.ansible.AnsibleInstallation' 'ansible'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr:'15'))
+        timeout(time: 60, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+
+    parameters {
+        // EKS cluster name
+        string(
+            name: 'EKSCLUSTER',
+            defaultValue: 'ProjectAlpha-Microservices-EKS',
+            description: 'Where should I deploy the application to?'
+        )
+        // Namespace
+        string(
+            name: 'NAMESPACE',
+            defaultValue: 'microservices',
+            description: 'Which k8s namespace should I deploy the application to?'
+        )
+        // Release name for helm chart
+        string(
+            name: 'RELEASE_NAME',
+            defaultValue: 'bulktransferprofiles',
+            description: 'Helm Chart Release Name'
+        )
+        // Chart name
+        string(
+            name: 'CHART_NAME',
+            defaultValue: 'projectalpha/bulktransferprofiles',
+            description: 'Helm Chart Name'
+        )
+        // Chart version
+        string(
+            name: 'CHART_VERSION',
+            defaultValue: '0.1.0',
+            description: 'Helm Chart Version'
+        )
+        // Delete release
+        booleanParam(
+        	name: 'DELETE_RELEASE_ENABLED',
+        	defaultValue: true,
+        	description: 'Would you want to delete the existing release?'
+        )
+    }
+
+    stages {
+
+        agent { label 'adop2-transition-k8s' }
+        
+        stage ('Prepare') {    
+            steps {
+                sh("rm -rf ~/.kube/")
+                sh("aws eks update-kubeconfig --name ${EKSCLUSTER}")
+            }
+        }
+
+        stage ('Execute') {
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                    ansiblePlaybook(
+                        playbook: 'src/main/ansible/playbook.yml',
+                        inventory: 'src/main/ansible/inventory.ini',
+                        extraVars: [
+                            workspace: '${workspace}',
+                            namespace: '${NAMESPACE}',
+                            release_name: '${RELEASE_NAME}',
+                            chart_name: '${CHART_NAME}',
+                            chart_version: '${CHART_VERSION}',
+                            additional_helm_args: '',
+                            delete_release_enabled: '${DELETE_RELEASE_ENABLED}'
+                        ],
+                        colorized: true
+                    )
+                }
+                cleanWs()
+            }
+        }
+
+        stage ('Clean up') {
+            steps {
+                sh("rm -rf ~/.kube/")
+            }
+        }
+    }
+}

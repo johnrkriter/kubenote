@@ -1,0 +1,85 @@
+# Default values for spring-cloud-data-flow.
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the serviceAccountName template
+  name:
+
+server:
+  image: springcloud/spring-cloud-dataflow-server
+  version: 2.0.1.RELEASE
+  imagePullPolicy: IfNotPresent
+  platformName: default
+  service:
+    # If you are running k8s on a local dev box, you can use type NodePort instead
+    type: LoadBalancer
+    externalPort: 443
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: dataflow.ms.example.com
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:ap-southeast-1:717603026805:certificate/d7ffdc20-63f4-44cc-9961-94ebce6bd472
+      service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+  resources: {}
+  #  limits:
+  #    cpu: 1.0
+  #    memory: 2048Mi
+  #  requests:
+  #    cpu: 0.5
+  #    memory: 640Mi
+
+skipper:
+  image: springcloud/spring-cloud-skipper-server
+  version: 2.0.0.RELEASE
+  imagePullPolicy: IfNotPresent
+  platformName: default
+  service:
+    type: ClusterIP
+  resources: {}
+  #  limits:
+  #    cpu: 1.0
+  #    memory: 1024Mi
+  #  requests:
+  #    cpu: 0.5
+  #    memory: 640Mi
+
+deployer:
+  resourceLimits:
+    cpu: 500m
+    memory: 1024Mi
+  readinessProbe:
+    initialDelaySeconds: 120
+  livenessProbe:
+    initialDelaySeconds: 90
+
+rabbitmq:
+  enabled: false
+  rabbitmqUsername: user
+
+kafka:
+  enabled: true
+  create: false
+  brokers: confluent-cp-kafka-headless.confluent:9092
+  replicas: 1
+  configurationOverrides:
+    "offsets.topic.replication.factor": 1
+    "confluent.support.metrics.enable": false
+  zookeeper:
+    nodes: confluent-cp-zookeeper-headless.confluent:2888
+    replicaCount: 1
+    persistence:
+      storageClass: gp2
+
+mysql:
+  enabled: false
+  mysqlDatabase: dataflow
+  persistence:
+    storageClass: gp2
+
+monitoring:
+  enabled: false
+  grafanaUrl: 'https://grafana.ms.example.com'
