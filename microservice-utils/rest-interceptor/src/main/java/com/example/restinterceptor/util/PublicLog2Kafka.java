@@ -13,11 +13,11 @@ public class PublicLog2Kafka implements PublicLog {
     private final ListenableFutureCallback requestLogCallback;
     private final ListenableFutureCallback externalRequestLogCallback;
     private final ListenableFutureCallback internalRequestLogCallback;
-    @Value("${rest-interceptor.requestLogTopic:FE-REQUEST-LOG}")
+    @Value("${rest-logging.requestLogTopic:REQUEST-LOG}")
     private String requestLogTopic;
-    @Value("${rest-interceptor.externalRequestLogTopic:FE-REQUEST-EXTERNAL-LOG}")
+    @Value("${rest-logging.externalRequestLogTopic:REQUEST-EXTERNAL-LOG}")
     private String externalRequestLogTopic;
-    @Value("${rest-interceptor.internalRequestLogTopic:FE-REQUEST-INTERNAL-LOG}")
+    @Value("${rest-logging.internalRequestLogTopic:REQUEST-INTERNAL-LOG}")
     private String internalRequestLogTopic;
     private KafkaTemplate kafkaTemplate;
 

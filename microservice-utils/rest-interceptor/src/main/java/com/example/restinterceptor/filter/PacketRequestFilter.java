@@ -37,15 +37,15 @@ public class PacketRequestFilter implements Filter {
     );
     @Value("${spring.application.name}")
     private String serviceName;
-    @Value("${logging.enabled.response-body:false}")
+    @Value("${rest-logging.enabled.response-body:false}")
     private boolean enabledResponseBodyLogging;
-    @Value("${logging.enabled.request-body:true}")
+    @Value("${rest-logging.enabled.request-body:true}")
     private boolean enabledRequestBodyLogging;
-    @Value("${logging.request-body.limitsize:24576}")
+    @Value("${rest-logging.request-body.limitsize:24576}")
     private int requestLogLimitSize;
-    @Value("${logging.response-body.limitsize:0}")
+    @Value("${rest-logging.response-body.limitsize:0}")
     private int logLimitSize;
-    @Value("${logging.response-body.maxlimit:1048576}")
+    @Value("${rest-logging.response-body.maxlimit:1048576}")
     private int maxLimit;
     @Autowired
     private PublicLog publicLog;

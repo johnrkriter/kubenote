@@ -17,15 +17,11 @@ Suggested to be used as part of a RestTemplate object so interceptors can be spe
   Set the values for the following properties in your `application.properties` file
   ```
   # Kafka Logging
-  logging.enabled.kafka=true
-  spring.kafka.logging.bootstrap-servers=localhost:9092
-  stream-logging.kafka.broker=localhost:9092
-  rest-interceptor.requestLogTopic=FE-REQUEST-LOG
-  rest-interceptor.externalRequestLogTopic=FE-REQUEST-EXTERNAL-LOG
-  rest-interceptor.internalRequestLogTopic=FE-REQUEST-INTERNAL-LOG
+  rest-logging.enabled=true
+  rest-logging.kafka.broker=localhost:9092
   ```
 ### Incoming request/response logging
-  This is enabled by default when `logging.enabled.kafka` is set to `true`. All requests are filtered and logged to the topic provided in `rest-interceptor.requestLogTopic`
+  This is enabled by default when `rest-logging.enabled` is set to `true`. All requests are filtered and logged to the topic provided in `rest-logging.requestLogTopic`
 ### Outgoing request/response logging
 1. Set the interceptors for your RestTemplate
     ```java

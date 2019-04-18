@@ -31,8 +31,8 @@ public class InterceptorConfig {
     private String appName;
 
     @Bean(name = "loggingKafkaTemplate")
-    @ConditionalOnProperty(name = "logging.enabled.kafka", havingValue = "true", matchIfMissing = true)
-    public KafkaTemplate kafkaTemplate(@Value("${spring.kafka.logging.bootstrap-servers}") String kafkaServers) {
+    @ConditionalOnProperty(name = "rest-logging.enabled", havingValue = "true", matchIfMissing = true)
+    public KafkaTemplate kafkaTemplate(@Value("${rest-logging.kafka.broker}") String kafkaServers) {
         return new KafkaTemplate<>(loggingKafkaProducerFactory(kafkaServers));
     }
 
@@ -50,8 +50,8 @@ public class InterceptorConfig {
 
 
     @Bean("restLoggingKafkaProducerFactory")
-    @ConditionalOnProperty(name = "logging.enabled.kafka", havingValue = "true", matchIfMissing = true)
-    public ProducerFactory<String, Object> loggingKafkaProducerFactory(@Value("${spring.kafka.logging.bootstrap-servers}") String kafkaServers) {
+    @ConditionalOnProperty(name = "rest-logging.enabled", havingValue = "true", matchIfMissing = true)
+    public ProducerFactory<String, Object> loggingKafkaProducerFactory(@Value("${rest-logging.kafka.broker}") String kafkaServers) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServers);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, appName);
@@ -62,7 +62,7 @@ public class InterceptorConfig {
     }
 
     @Bean(name = "kafkaThreadPoolTaskExecutor")
-    public Executor threadPoolTaskExecutor(@Value("${kafka.threadpool.keepAliveSeconds:61}") int keepAliveSeconds) {
+    public Executor threadPoolTaskExecutor(@Value("${rest-logging.kafka.threadpool.keepAliveSeconds:61}") int keepAliveSeconds) {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setKeepAliveSeconds(keepAliveSeconds);
         threadPoolTaskExecutor.setThreadNamePrefix("kkTaskExecutor-");

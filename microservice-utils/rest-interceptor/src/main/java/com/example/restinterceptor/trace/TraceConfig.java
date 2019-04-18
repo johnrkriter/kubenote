@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 public class TraceConfig {
 
     @Bean
-    @ConditionalOnProperty(value = "10x1-rest-interceptor.correlationid-propagation.enabled", matchIfMissing = true)
+    @ConditionalOnProperty(value = "rest-logging.correlationid-propagation.enabled", matchIfMissing = true)
     public CurrentTraceContext.ScopeDecorator correlationIdScopeDecorator() {
         return new CorrelationIdScopeDecorator();
     }

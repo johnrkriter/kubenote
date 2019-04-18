@@ -38,13 +38,13 @@ public class ExternalApiRequestLoggingInterceptor implements ClientHttpRequestIn
 
     @Value("${spring.application.name}")
     private String serviceName;
-    @Value("${logging.enabled.response-body:false}")
+    @Value("${rest-logging.enabled.response-body:false}")
     private boolean enabledResponseBodyLogging;
-    @Value("${logging.response-body.limitsize:0}")
+    @Value("${rest-logging.response-body.limitsize:0}")
     private int logLimitSize;
-    @Value("${logging.enabled.request-body:true}")
+    @Value("${rest-logging.enabled.request-body:true}")
     private boolean enabledRequestBodyLogging;
-    @Value("${logging.request-body.limitsize:0}")
+    @Value("${rest-logging.request-body.limitsize:0}")
     private int requestLogLimitSize;
 
     @Autowired
