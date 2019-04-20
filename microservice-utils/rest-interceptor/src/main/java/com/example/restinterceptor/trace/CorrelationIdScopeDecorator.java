@@ -15,6 +15,7 @@ import org.slf4j.MDC;
  * <p>
  * Reference: Slf4jScopeDecorator in {@link org.springframework.cloud.sleuth.log}
  */
+@Deprecated
 @Slf4j
 public class CorrelationIdScopeDecorator implements CurrentTraceContext.ScopeDecorator {
 

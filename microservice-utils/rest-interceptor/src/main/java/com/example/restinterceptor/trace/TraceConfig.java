@@ -9,8 +9,9 @@ import org.springframework.context.annotation.PropertySource;
 /**
  * Reference: {@link org.springframework.cloud.sleuth.log.SleuthLogAutoConfiguration}
  */
-@Configuration
-@PropertySource("classpath:rest-interceptors.properties")
+@Deprecated
+//@Configuration
+//@PropertySource("classpath:rest-interceptors.properties")
 public class TraceConfig {
 
     @Bean

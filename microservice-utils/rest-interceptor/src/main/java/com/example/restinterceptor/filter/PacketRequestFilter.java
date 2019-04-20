@@ -83,19 +83,19 @@ public class PacketRequestFilter implements Filter {
         long startTime = System.currentTimeMillis();
         ContentCachingRequestWrapper request = new ContentCachingRequestWrapper(httpServletRequest);
         ContentCachingResponseWrapper response = new ContentCachingResponseWrapper(httpServletResponse);
-        String correlationId = request.getHeader(CORRELATION_ID);
+        /*String correlationId = request.getHeader(CORRELATION_ID);
         if (correlationId != null) {
             MDC.put(InterceptorConstants.CORRELATION_ID, correlationId);
             // Propagate Correlation ID via Sleuth trace context
             try (Tracer.SpanInScope ws = tracer.withSpanInScope(tracer.nextSpan().start())) {
                 ExtraFieldPropagation.set(InterceptorConstants.CORRELATION_ID, correlationId);
             }
-        }
+        }*/
         try {
             filterChain.doFilter(request, response);
         } finally {
             preparePacket(startTime, request, response);
-            MDC.remove(InterceptorConstants.CORRELATION_ID);
+//            MDC.remove(InterceptorConstants.CORRELATION_ID);
             response.copyBodyToResponse();
         }
     }
