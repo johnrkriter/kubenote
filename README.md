@@ -28,7 +28,7 @@
 | Rule Engine using Camunda | WIP |
 | BPM using Camunda | WIP |
 | Swagger | Produce Swagger documentation automatically using Swagger Maven dependencies - WIP |
-| Traceability with Spring Cloud Sleuth | See [log-helper](micservice-utils/log-helper) .WIP |
+| Traceability with Spring Cloud Sleuth | See [log-helper](microservice-utils/log-helper) .WIP |
 
 ## Useful Utilities
 | Feature | Details	|
@@ -41,7 +41,7 @@
 | [storage-helper](microservice-utils/storage-helper) | To integrate with object storage platforms, i.e. AWS S3, Minio. |
 | [cloud-config-helper](microservice-utils/cloud-config-helper) | Perform logging upon configuration refresh via Spring Cloud Bus |
 | [event-helper](microservice-utils/event-helper) | Provide facility to publish audit/event log (in HashMap<String, Object> format) to Kafka. |
-| [log-helper](micservice-utils/log-helper) | Configures console log to include additional fields for traceability purposes. |
+| [log-helper](microservice-utils/log-helper) | Configures console log to include additional fields for traceability purposes. |
 | [Exception Handling](microservice-utils/exception-handling) | |
 | [Helm Starter](helm-starter) | Customize your own Helm chart starter. |
 | [jib-maven-plugin](jib-maven-plugin.md) | Build Docker image from source code using Maven plugin. |
