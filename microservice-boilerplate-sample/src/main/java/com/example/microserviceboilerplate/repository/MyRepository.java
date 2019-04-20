@@ -1,5 +1,6 @@
 package com.example.microserviceboilerplate.repository;
 
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Slf4j
+@Log4j2
 public class MyRepository {
 
 	@Autowired
