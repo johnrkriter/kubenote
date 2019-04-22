@@ -19,8 +19,8 @@
 3. Perform logging using `@Log4j2`. Sample output as below.
 	* `spring.application.name=demodemo`
 	* `traceId` is f7b518334ee1d87c
-	* `spanId` is f7b518334ee1d87c
-	* `traceId` is f7b518334ee1d87c
+	* `spanId` is h8r3hqaiofhaw8os
+	* `correlationId` is 3
 	```bash
-	2019-04-20 14:52:39.258  INFO [demodemo,f7b518334ee1d87c,f7b518334ee1d87c,3] 50823 --- [nio-8080-exec-1] c.e.MyController                         : logging with Log4j2 - hello! 3
+	2019-04-20 14:52:39.258  INFO [demodemo,f7b518334ee1d87c,h8r3hqaiofhaw8os,3] 50823 --- [nio-8080-exec-1] c.e.MyController                         : logging with Log4j2 - hello! 3
 	```
