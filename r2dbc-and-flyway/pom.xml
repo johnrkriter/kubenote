@@ -49,12 +49,7 @@
 		</dependency>
 
 		<!-- ||| DATABASE ||| -->
-		<!-- org.springframework.boot.experimental:0.1.0.M1 provides spring-data-r2dbc:1.0.0.M2 -->
-		<dependency>
-			<groupId>org.springframework.boot.experimental</groupId>
-			<artifactId>spring-boot-starter-r2dbc</artifactId>
-			<version>0.1.0.M1</version>
-		</dependency>
+		<!-- spring-boot-starter-data-r2dbc:0.1.0.M1 provides spring-data-r2dbc:1.0.0.M2 -->
 		<dependency>
 			<groupId>org.springframework.boot.experimental</groupId>
 			<artifactId>spring-boot-starter-data-r2dbc</artifactId>

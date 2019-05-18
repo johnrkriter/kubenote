@@ -5,6 +5,7 @@ import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.data.r2dbc.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -40,4 +41,12 @@ public class PetRepository {
 				)).one()
 				.switchIfEmpty(Mono.error(new RuntimeException("Pet not found!")));
 	}
+
+	/*public Mono<Pet> getOne(String name) {
+		return databaseClient
+				.select().from("pets")
+				.matching(Criteria.where("pets").is(name))
+				.as(Pet.class).fetch().one()
+				.switchIfEmpty(Mono.error(new RuntimeException("Pet not found!")));
+	}*/
 }

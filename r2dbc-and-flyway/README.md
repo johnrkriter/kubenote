@@ -1,6 +1,7 @@
 # R2DBC 
 
 ## Dependencies
+* Maven
 * Java 11
 * Spring Boot 2.2.0 (SNAPSHOT)
 * [Spring Data R2DBC 1.0 M2](https://spring.io/blog/2019/05/15/spring-data-r2dbc-1-0-m2-and-spring-boot-starter-released)
