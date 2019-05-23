@@ -26,6 +26,17 @@ public class PetHandler {
                 .body(petRepository.getSound(featureName), String.class);
     }
 
+    public Mono transactionDemo(ServerRequest serverRequest) {
+        petRepository.transactionDemo(
+                serverRequest.queryParam("name").orElseThrow(() -> new RuntimeException("Bad request! Name is missing!")),
+                serverRequest.queryParam("sound").orElseThrow(() -> new RuntimeException("Bad request! Sound is missing!"))
+        ).subscribe();
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.empty(), Void.class);
+    }
+
 }
 
 

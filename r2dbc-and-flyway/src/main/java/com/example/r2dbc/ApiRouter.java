@@ -23,6 +23,7 @@ public class ApiRouter {
         return nest(applicationJsonOnly(), route()
 				.path("/v1/demo", builder -> builder
 						.GET("/pets/{petName}", petHandler::getSound)
+						.POST("/transaction", petHandler::transactionDemo)
 						.GET("/hello",
 								request -> status(HttpStatus.NOT_FOUND)
 										.contentType(MediaType.APPLICATION_JSON)
