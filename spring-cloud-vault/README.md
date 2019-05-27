@@ -28,7 +28,7 @@ See Spring's official documentation: https://spring.io/guides/gs/vault-config
 	```
 	mvn spring-boot:run
 	```
-2. Go to http://localhost:8080/show-value and you shall see it returns `from-value`.
+2. Go to http://localhost:8080/show-value and you shall see it returns `from-vault`.
 	```
 	$ http :8080/show-value
 	HTTP/1.1 200 OK
