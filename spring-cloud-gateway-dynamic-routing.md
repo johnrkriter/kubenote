@@ -7,37 +7,37 @@
 
 ## Architecture
 
-                      |-------------------| 
-                      |                   | 
-                      |    Transfer MS    | 
-                      |                   | 
-                      |-------------------| 
-                                ^
-                                |
-                                | Normal scenario
-                                |
-                      |-------------------|                         |-------------------|
-                      |                   |                         |                   |
-Request ----------->  |     Gateway MS    | --------------------->  |  Availability MS  |
-                      |                   |    Downtime enabled     |                   |
-                      |-------------------|                         |-------------------|
-                                |
-                                |
-                                |
-                      |-------------------|
-                      |                   |
-                      |      Consul       |
-                      |                   |
-                      |-------------------|
-                                ^
-                                |
-                                | git2consul
-                                |
-                      |-------------------|
-                      |                   |
-                      |        git        |
-                      |                   |
-                      |-------------------|
+	                      |-------------------| 
+	                      |                   | 
+	                      |    Transfer MS    | 
+	                      |                   | 
+	                      |-------------------| 
+	                                ^
+	                                |
+	                                | Normal scenario
+	                                |
+	                      |-------------------|                         |-------------------|
+	                      |                   |                         |                   |
+	Request ----------->  |     Gateway MS    | --------------------->  |  Availability MS  |
+	                      |                   |    Downtime enabled     |                   |
+	                      |-------------------|                         |-------------------|
+	                                |
+	                                |
+	                                |
+	                      |-------------------|
+	                      |                   |
+	                      |      Consul       |
+	                      |                   |
+	                      |-------------------|
+	                                ^
+	                                |
+	                                | git2consul
+	                                |
+	                      |-------------------|
+	                      |                   |
+	                      |        git        |
+	                      |                   |
+	                      |-------------------|
 
 * Under normal scenario, a request hitting Gateway MS would be routed to Availability MS (through [Discovery Locator](https://cloud.spring.io/spring-cloud-gateway/multi/multi__configuration.html#_discoveryclient_route_definition_locator)).
 * Gateway MS contains route definitions with predicates where if a property (e.g. `downtime.transfer.enabled`) is true, it routes the request to Availability MS instead.
