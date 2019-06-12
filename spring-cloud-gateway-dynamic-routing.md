@@ -51,7 +51,7 @@
 #### RouteLocator Bean
 Notes:
 1. `@RefreshScope` is important here to enable hot route definition refresh.
-2. TODO 1: Parameterize between predicates' parameters (fromTime, toTime)
+2. ~TODO 1: Parameterize between predicates' parameters (fromTime, toTime)~
 3. TODO 2: Update uri of Availability MS instead of hardcoding if using service discovery + Ribbon
 4. For each service (e.g. transfer), one new dedicated route definition needs to be created.
 ```java
@@ -62,25 +62,34 @@ public class DowntimeConfig {
 	@Value("${downtime.app.enabled:false}")
 	private boolean appDowntimeEnabled;
 
+	@Value("${downtime.app.startTime:'1999-01-01T00:00:00.000+08:00[Asia/Singapore]'}")
+	private boolean appDowntimeStartTime;
+
+	@Value("${downtime.app.endTime:'2099-01-01T23:59:59.999+08:00[Asia/Singapore]'}")
+	private boolean appDowntimeEndTime;
+
 	@Value("${downtime.transfer.enabled:false}")
 	private boolean transferDowntimeEnabled;
 
-	/**
-	 * TODO: Parameterize between predicate's parameter
-	 */
+	@Value("${downtime.transfer.startTime:'1999-01-01T00:00:00.000+08:00[Asia/Singapore]'}")
+	private boolean transferDowntimeStartTime;
+
+	@Value("${downtime.transfer.endTime:'2099-01-01T23:59:59.999+08:00[Asia/Singapore]'}")
+	private boolean transferDowntimeEndTime;
+
 	@Bean
 	@RefreshScope
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 		return builder.routes()
 				.route(r -> r.path("/anything/{segment}")
 						.and().predicate(x -> appDowntimeEnabled)
-						.and().between(ZonedDateTime.parse("1999-01-01T00:00:00.000+08:00[Asia/Singapore]"), ZonedDateTime.parse("1999-01-01T23:59:59.999+08:00[Asia/Singapore]"))
+						.and().between(ZonedDateTime.parse(appDowntimeStartTime), ZonedDateTime.parse(appDowntimeEndTime))
 						.filters(f -> f.rewritePath("/(?<segment>.*)", "/downtime"))
 						.uri("http://localhost:7001")
 				)
 				.route(r -> r.path("/api/transfer/{segment}")
 						.and().predicate(x -> transferDowntimeEnabled)
-						.and().between(ZonedDateTime.parse("1999-01-01T00:00:00.000+08:00[Asia/Singapore]"), ZonedDateTime.parse("2099-01-01T23:59:59.999+08:00[Asia/Singapore]"))
+						.and().between(ZonedDateTime.parse(transferDowntimeStartTime), ZonedDateTime.parse(transferDowntimeEndTime))
 						.filters(f -> f.rewritePath("/(?<segment>.*)", "/v1/availability/downtime/transfer"))
 						.uri("http://localhost:8080") // TODO: Change to "http://availability" when using Service Discovery + Ribbon
 				)
@@ -102,7 +111,26 @@ spring.cloud.consul.config.format=FILES
 ### git2consul
 * Sample git to store properties: https://github.com/vxavictor513/git2consul-data
 * To use git2consul, install using `npm` following the guide [here](https://github.com/breser/git2consul), then execute `git2consul --config-file git2consul.json`.
-#### Sample git2consul.json File
+
+#### Sample data in Git
+##### Sample folder structure
+```
+.
+|-- .gitignore
+|-- gateway.properties
+```
+
+##### Sample `gateway.properties` file
+```properties
+downtime.app.enabled=true
+downtime.app.startTime=1999-01-01T00:00:00.000+08:00[Asia/Singapore]
+downtime.app.endTime=2099-01-01T23:59:59.999+08:00[Asia/Singapore]
+downtime.transfer.enabled=true
+downtime.transfer.startTime=1999-01-01T00:00:00.000+08:00[Asia/Singapore]
+downtime.transfer.endTime=2099-01-01T23:59:59.999+08:00[Asia/Singapore]
+```
+
+#### Sample `git2consul.json` File
 ```json
 {
   "version": "1.0",
