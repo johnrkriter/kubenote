@@ -2,7 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+##replica's should always be set above 1 so that you deal wth any issues of concurrent execution of pods during dev time not later in SDLC
+replicaCount: 2
 
 image:
   repository: my-chart-repo.com/<CHARTNAME>
@@ -66,14 +67,14 @@ env:
 imagePullSecrets: []
 
 resources: {}
-# The followings are sample initial values.
+# The followings are sample initial values. These have been set assuming that max heap size and min heap size are set to respect these. They are set initially to garuntee that K8S gets required sizing planning and restriction metrics
 # A conscious design decision should drive setting these values in a meaningful way
-#  limits:
-#    cpu: 1000m
-#    memory: 1024Mi
-#  requests:
-#    cpu: 500m
-#    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+  requests:
+    cpu: 500m
+    memory: 512Mi
 
 nodeSelector: {}
 
